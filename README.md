@@ -3,7 +3,7 @@
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-git clone https://github.com/Cardebul/xl.git
+git clone https://github.com/Cardebul/exel.git
 ```
 
 Cоздать и активировать виртуальное окружение:
