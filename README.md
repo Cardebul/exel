@@ -15,6 +15,10 @@ python3 -m venv env
 ```
 source env/bin/activate
 ```
+или
+```
+source env/Scripts/activate
+```
 
 ```
 cd kp
