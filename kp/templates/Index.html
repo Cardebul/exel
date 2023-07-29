@@ -1,0 +1,467 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - KP_Generator</title>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap/dist/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/site.css' %}" asp-append-version="true" />
+    <!-- <link rel="stylesheet" href="{% static 'KP_Generator.styles.css' %}" asp-append-version="true" /> -->
+    <link rel="stylesheet" href="{% static 'css/HomeStyle.css' %}" asp-append-version="true" />
+    <script src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/frappe-gantt.min.css' %}" asp-append-version="true" />
+    <script src="{% static 'js/frappe-gantt.min.js' %}"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">KP_Generator</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            
+			
+			
+<style>
+#price {
+    display: flex;
+    padding-top: 22px;
+    justify-content: center;
+}
+
+
+.tab { overflow: hidden; }
+
+.tab button {
+    background-color: #fff;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+    width: 80px;
+    height: 30px;
+    border-radius: 6px;
+    margin-bottom: 3px;
+}
+
+.tab button:hover { background-color: #eee; }
+
+.tab button.active { font-weight: bold;  }
+
+.tab button.active div {
+    text-decoration: underline;
+    text-underline-offset: 11px;
+}
+
+.tabcontent { display: none; }
+
+.topright {
+    float: right;
+    cursor: pointer;
+    font-size: 28px;
+}
+
+.topright:hover {
+    color: red;
+}
+</style>
+
+<script>
+    function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+</script>
+
+
+<script>
+    function addRow(){
+        document.getElementById("tasks").insertRow().innerHTML =
+            "<td><input type='text' name='itemName[]' required ></td>" +
+            "<td><input type='text' name='itemName1[]' required ></td>" +
+            "<td><input type='number' pattern='[1-9]\d*'' title='Введите натуральное число больше 0' name='itemName2[]' value='1' required ></td>" +
+            "<td><input type='number' pattern='[1-9]\d*'' title='Введите натуральное число больше 0' name='itemName3[]' required ></td>" +
+            "<td><button class=\"icn-del\" onclick=\"delRow(this)\" ></button></td>";
+    }
+    function delRow(obj) {
+    if (confirm("Вы действительно хотите удалить строку?")) {
+        obj.parentNode.parentNode.parentNode.removeChild(obj.parentNode.parentNode);
+    }
+    event.preventDefault();
+}
+// дописал
+function sendFormData(fileType) {
+    const form1 = document.getElementById('myForm');
+    const form2 = document.getElementById('myForm2');
+
+    const filenameValue = form1.elements.ProjectName.value
+
+    let filename;
+    if (fileType === 1) {
+        filename = `${filenameValue}.xlsx`;
+        defaultname = 'defaultname.xlsx';
+    } else if (fileType === 2) {
+        defaultname = 'defaultname.docx';
+        filename = `${filenameValue}.docx`;
+    }
+
+    const formData = new FormData(form1);
+    const formData2 = new FormData(form2); // Добавление новой переменной для формы myForm2
+
+    const table = document.getElementById('tasks');
+    const rows = table.getElementsByTagName('tr');
+
+    let hasEmptyFields = false;
+    let hasInvalidValues = false; // Добавление новой переменной для проверки некорректных значений
+
+    for (let i = 0; i < rows.length; i++) {
+        const inputs = rows[i].querySelectorAll('input, select, textarea');
+
+        inputs.forEach(input => {
+            const name = input.getAttribute('name');
+            const value = input.value;
+
+            if (input.required && !value) {
+                hasEmptyFields = true;
+                return;
+            }
+
+            if (name === 'itemName2[]' || name === 'itemName3[]') {
+                // Проверка на натуральное число больше 0
+                if (!/^(?:[1-9]|[12]\d|3[01]?)$/.test(value)) {
+                    hasInvalidValues = true;
+                    return;
+                }
+            }
+
+            formData.append(name, value);
+        });
+
+        if (hasEmptyFields) {
+            alert("Пожалуйста, заполните все поля и убедитесь, что в полях 'Количество', 'Временной лаг' и 'Тариф' натуральные числа больше 0");            
+            return;
+        }
+
+        if (hasInvalidValues) {
+            alert("Пожалуйста, введите только натуральные числа больше 0 и меньше 32 в поля 'Количество' и 'Временной лаг'");
+            return;
+        }
+    }
+
+    const priceInput = form1.elements.Price;
+    const priceValue = priceInput.value;
+
+    if (!/^[1-9]\d*$/.test(priceValue)) {
+        hasInvalidValues = true;
+    }
+
+    if (hasInvalidValues) {
+        alert("Пожалуйста, введите только натуральные числа больше 0 в поле 'Тариф'");
+        return;
+    }
+
+    // Обработка полей формы myForm2
+    const form2Inputs = form1.querySelectorAll('input, select, textarea');
+    form2Inputs.forEach(input => {
+        const name = input.getAttribute('name');
+        const value = input.value;
+
+        if (input.required && !value) {
+            hasEmptyFields = true;
+            return;
+        }
+
+        formData2.append(name, value);
+    });
+
+    if (hasEmptyFields) {
+        alert("Пожалуйста, заполните все поля и убедитесь, что в полях 'Количество', 'Временной лаг' и 'Тариф' натуральные числа больше 0");
+        return;
+    }
+
+    formData.append('param_name', fileType);
+
+    fetch('{% url "xl:gen" %}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+    if (response.ok) {
+        return response.blob(); // Получение данных файла
+    } else {
+        alert('Ошибка при загрузке файла');
+        throw new Error('Ошибка при загрузке файла');
+    }
+    })
+    .then(blobData => {
+    const fileUrl = URL.createObjectURL(blobData); // Создание URL для скачивания файла
+    // Продолжайте обработку файла, например:
+    // Создание URL для скачивания файла
+    // Продолжайте обработку файла, например:
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = filenameValue ? filename : defaultname;
+ // Задаем желаемое имя файла и его расширение
+    
+    link.click(); // Автоматически запускаем скачивание файла
+    // window.location.href = link; // Перенаправьте пользователя на URL файла для его скачивания
+    })
+    .catch(error => {
+    console.error(error);
+    throw error;
+    });
+}
+
+// до сюда
+
+function loadTable(obj) {
+    // $.ajax({
+    //     url: 'https://localhost:7216/Home/convert_to_excel_table',
+    //     type: 'POST',
+    //         data: JSON.stringify(
+    //             {
+    //                 ProjectName: 'test',
+    //                 StartDate: '2012-12-12',
+    //                 Rate: 900,
+    //                 Tasks: []
+    //             }
+    //     ),
+    //     contentType: 'application/json; charset=utf-8',
+    //     dataType: 'json',
+    //     success: function (data) {
+    //         console.log('Success:', data);
+    //     },
+    //     error: function (xhr, status, error) {
+    //         console.log('Error:', error);
+    //     }
+    // });
+    // window.location.href = 'xl:download';
+
+    // // Используя window.location.replace()
+    // window.location.replace('xl:download');
+    sendFormData(1);
+}
+
+
+function loadAgreement(obj) {
+    // $.ajax({
+    //     url: 'https://localhost:7216/Home/convert_to_word_agreement',
+    //     type: 'POST',
+    //     data: JSON.stringify({ 
+    //         ProjectName: 'John',
+    //     }),
+    //     contentType: 'application/json; charset=utf-8',
+    //     dataType: 'json',
+    //     success: function (data) {
+    //         console.log('Success:', data);
+    //     },
+    //     error: function (xhr, status, error) {
+    //         console.log('Error:', error);
+    //     }
+    // });
+    sendFormData(2);
+}
+    
+</script>
+<form id="myForm">
+    {% csrf_token %}
+    <div class="header">
+        <table>
+            <tr>
+                <td>
+                    <label for="ProjectName">Имя проекта</label>
+                    <input name="ProjectName" type="text" required>
+                </td>
+                <td>
+                    <label for="Price">Тариф</label>
+                    <input name="Price" type="number" required>
+                </td>
+                <td>
+                    <label for="Start">Дата начала</label>
+                    <input type="date" name="Start" required>
+                </td>
+                <td>
+                    <label for="time-period">Период времени</label>
+                    <select name="time-period" id="time-period" required>
+                        <option value="дням">Дни</option>
+                        <option value="неделям">Недели</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div id="price">
+            <input type="button" name="table" value="Скачать таблицу" onclick="loadTable()">
+            <input type="button" name="agreement" value="Скачать договор" onclick="loadAgreement()">
+        </div>
+    </div>
+</form>
+
+
+<div class="content">
+
+
+    <div id="gantt" class="tabcontent">     
+       <div class="gantt-target"></div>   
+    </div>
+
+    <div >
+        <form id="myForm2">
+            {% csrf_token %}
+            <table id="tasks">
+                <tr>
+                    <td>Этап</td>
+                    <td>Работы</td>
+                    <td>Количество</td>
+                    <td>Временной лаг</td>
+                    <td width="25px">
+                        <button type="button" class="icn-plus" style="margin-right:4px" onclick="addRow(this)"></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input name='itemName[]' type="text" id="my-input" list="my-list" required >
+                        <datalist id="my-list">
+                            <option value="Значение 1">
+                            <option value="Значение 2">
+                            <option value="Значение 3">
+                        </datalist>
+                    </td>
+                    <td><input type="text" name="itemName1[]" required ></td>
+                    <td><input type="number" name="itemName2[]" pattern='[1-9]\d*'' title='Введите натуральное число больше 0' value="1" required ></td>
+                    <td><input type="number" name="itemName3[]" pattern='[1-9]\d*'' title='Введите натуральное число больше 0' required ></td>
+                    <td><button class="icn-del button" onclick="delRow(this)"></button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    var tasks = [
+        {
+            start: '2018-10-01',
+            end: '2018-10-08',
+            name: 'Redesign website',
+            id: "Task 0",
+            progress: 20
+        },
+        {
+            start: '2018-10-03',
+            end: '2018-10-06',
+            name: 'Write new content',
+            id: "Task 1",
+            progress: 5,
+            dependencies: 'Task 0'
+        },
+        {
+            start: '2018-10-04',
+            end: '2018-10-08',
+            name: 'Apply new styles',
+            id: "Task 2",
+            progress: 10,
+            dependencies: 'Task 1'
+        },
+        {
+            start: '2018-10-08',
+            end: '2018-10-09',
+            name: 'Review',
+            id: "Task 3",
+            progress: 5,
+            dependencies: 'Task 2'
+        },
+        {
+            start: '2018-10-08',
+            end: '2018-10-10',
+            name: 'Deploy',
+            id: "Task 4",
+            progress: 0,
+            dependencies: 'Task 2'
+        },
+        {
+            start: '2018-10-11',
+            end: '2018-10-11',
+            name: 'Go Live!',
+            id: "Task 5",
+            progress: 0,
+            dependencies: 'Task 4',
+            custom_class: 'bar-milestone'
+        },
+        {
+            start: '2014-01-05',
+            end: '2019-10-12',
+            name: 'Long term task',
+            id: "Task 6",
+            progress: 0
+        }
+    ]
+    var gantt_chart = new Gantt(".gantt-target", tasks, {
+        on_click: task => {
+            console.log(task);
+        },
+        on_date_change: (task, start, end) => {
+            console.log(task, start, end);
+        },
+        on_progress_change: (task, progress) => {
+            console.log(task, progress);
+        },
+        on_view_change: (mode) => {
+            console.log(mode);
+        },
+        view_mode: 'Month',
+        language: 'en'
+    });
+    console.log(gantt_chart);
+</script>
+			
+			
+			
+			
+			
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - KP_Generator - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="{% static 'lib/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/site.js' %}" asp-append-version="true"></script>
+</body>
+</html>

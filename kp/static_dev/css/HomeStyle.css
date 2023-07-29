@@ -1,0 +1,57 @@
+﻿input {
+    border: 1px solid #BBB;
+    border-radius: 2px;
+}
+
+.header {
+    border: 1px solid #BBB;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.header label {
+    margin-left: 10px;
+}
+
+.content {
+    padding: 20px;
+    border: 1px solid #BBB;
+    border-radius: 8px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+table { width: 100%; border:1px solid #EEE; overflow-y: auto }
+td { border-collapse: collapse; border-bottom: 1px solid #EEE; }
+table tr:first-child td {text-align: center;background: #EEE;}
+table tr:not(:first-child) td:not(:first-child):not(:last-child) {border-left: 1px solid #EEE;}
+
+table td input {
+    width: 100%;
+    border: 0px;
+    outline: 0px;
+}
+button {
+    border: 0;
+    width: 16px;
+    height: 16px;
+    color: #000;
+    margin-top: 3px;
+}
+.icn-del {background: url('../img/delete.svg');}
+.icn-plus {background: url('../img/plus.svg');}
+
+@media only screen and (max-width: 990px) {
+    .header {
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        grid-gap: 1rem;
+    }
+    label[for="ProjectName"] { grid-column: 1 / span 1; }
+    input[name="ProjectName"] { grid-column: 2 / span 1; }
+    label[for="Start"] { grid-column: 1 / span 1; }
+    input[name="Start"] { grid-column: 2 / span 1; }
+    input[name="table"] {grid-column: 1 / span 1;}
+    input[name="agreement"] {grid-column: 2 / span 1;}
+}
+
