@@ -20,6 +20,13 @@ source env/bin/activate
 source env/Scripts/activate
 ```
 
+перейти
+
+```
+cd exel
+```
+
+
 ```
 cd kp
 ```
