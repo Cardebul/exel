@@ -5,6 +5,7 @@ import os
 def valid_data(request):
     project_name = request.POST.get('ProjectName')
     price = request.POST.get('Price')
+    people = request.POST.get('People')
     start_date = request.POST.get('Start')
     time_period = request.POST.get('time-period')
 
@@ -16,6 +17,7 @@ def valid_data(request):
     data1 = {
             'Имя': project_name,
             'Тариф': price,
+            'Человек': people,
             'Дата': start_date,
             'Дни/Недели': time_period,
         }

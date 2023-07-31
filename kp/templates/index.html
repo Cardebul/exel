@@ -5,36 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - KP_Generator</title>
-    <link rel="stylesheet" href="{% static 'lib/bootstrap/dist/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/site.css' %}" asp-append-version="true" />
     <!-- <link rel="stylesheet" href="{% static 'KP_Generator.styles.css' %}" asp-append-version="true" /> -->
     <link rel="stylesheet" href="{% static 'css/HomeStyle.css' %}" asp-append-version="true" />
-    <script src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/frappe-gantt.min.css' %}" asp-append-version="true" />
     <script src="{% static 'js/frappe-gantt.min.js' %}"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">KP_Generator</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             
@@ -183,12 +161,19 @@ function sendFormData(fileType) {
     const priceInput = form1.elements.Price;
     const priceValue = priceInput.value;
 
+    const peopleInput = form1.elements.People;
+    const peopleValue = peopleInput.value;
+
     if (!/^[1-9]\d*$/.test(priceValue)) {
+        hasInvalidValues = true;
+    }
+    
+    if (!/^[1-9]\d*$/.test(peopleValue)) {
         hasInvalidValues = true;
     }
 
     if (hasInvalidValues) {
-        alert("Пожалуйста, введите только натуральные числа больше 0 в поле 'Тариф'");
+        alert("Пожалуйста, введите только натуральные числа больше 0 в поле 'Тариф' и 'Количество человек' ");
         return;
     }
 
@@ -307,6 +292,10 @@ function loadAgreement(obj) {
                 <td>
                     <label for="Price">Тариф</label>
                     <input name="Price" type="number" required>
+                </td>
+                <td>
+                    <label for="People">Количество человек</label>
+                    <input type="number" name="People" required>
                 </td>
                 <td>
                     <label for="Start">Дата начала</label>
@@ -461,7 +450,6 @@ function loadAgreement(obj) {
             &copy; 2023 - KP_Generator - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="{% static 'lib/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/site.js' %}" asp-append-version="true"></script>
 </body>
 </html>

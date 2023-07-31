@@ -4,7 +4,7 @@ from datetime import datetime as dt, timedelta
 """Константы"""
 warn = 'ошибка получения данных'
 alignment = Alignment(horizontal='center', vertical='center')
-fill = PatternFill(start_color="808080", end_color="808080", fill_type="solid")
+fill = PatternFill(start_color="d9d9d9", end_color="d9d9d9", fill_type="solid")
 side = Side(border_style="thin", color="000000")
 bor = Border(left=side, top=side, right=side, bottom=side)
 font = Font(color=Color(rgb='FFFFFF'))
@@ -82,7 +82,7 @@ def create(sheet, data, row, date, cash, total_sum, hours, D_W):
     На вход принимает лист, данные, строку, дату, почасовую сумму,
     общую сумму и общее количество часов
     """
-    D_or_W = 5 if D_W == 'неделям' else 1
+    D_or_W = 7 if D_W == 'неделям' else 1
     mul = 8*5 if D_W == 'неделям' else 8
     sheet.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
     name, many = tuple(data.items())[0]
@@ -92,7 +92,7 @@ def create(sheet, data, row, date, cash, total_sum, hours, D_W):
     for i in range(7, 28):
         sheet.cell(row=row, column=i).value = i - 6
         sheet.cell(row=row, column=i).font = font
-    fill = PatternFill(start_color="a0deb0", end_color="a0deb0",
+    fill = PatternFill(start_color="c6e0b4", end_color="c6e0b4",
                        fill_type="solid")
     side = Side(border_style="thin", color="000000")
     fil(sheet, row, fill)
@@ -110,7 +110,7 @@ def create(sheet, data, row, date, cash, total_sum, hours, D_W):
         sheet.merge_cells(start_row=row, start_column=2, end_row=row,
                           end_column=3)
         sheet.cell(row=row, column=col).value = i[0]
-        time = dt.strptime(date, '%Y-%m-%d') + timedelta(days=val_2*D_or_W-1)
+        time = dt.strptime(date, '%Y-%m-%d') + timedelta(days=0 if val_2==1 else val_2*D_or_W)
         sheet.cell(row=row, column=col+2).value = time.strftime('%d.%m.%Y')
         sheet.cell(row=row, column=col+3).value = val_1 * mul
         sheet.cell(row=row, column=col+3).alignment = alignment
@@ -169,7 +169,7 @@ def ff(data1, data2):
 
     sheet.cell(row=2, column=7).alignment = alignment
     sheet.merge_cells(start_row=2, start_column=7, end_row=3, end_column=27)
-    values = ['Задачи', 'Начало', 'Часы*', 'Стоимость']
+    values = ['Задачи', 'Начало', 'Часы', 'Стоимость']
     sheet.cell(row=5, column=2).value = values[0]
     sheet.cell(row=5, column=4).value = values[1]
     sheet.cell(row=5, column=5).value = values[2]
@@ -209,6 +209,7 @@ def ff(data1, data2):
 
     sheet.cell(row=row, column=2).value = 'Итого'
     sheet.cell(row=row, column=5).value = hours
+    sheet.cell(row=row, column=5).alignment = alignment
     sheet.cell(row=row, column=6).value = total_sum
     new_side = Side(border_style="medium", color="000000")
 
